@@ -1,0 +1,8 @@
+services:
+  avito-clicker:
+    build: .
+    volumes:
+      - ./storage:/app/storage
+    environment:
+      AVITO_DB: /app/storage/avito-clicker.sqlite3
+      AVITO_STORAGE_STATE: /app/storage/avito-storage-state.json
