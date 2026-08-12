@@ -63,6 +63,17 @@ def cmd_show(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_details(args: argparse.Namespace) -> int:
+    settings = Settings.from_env()
+    try:
+        vacancy = _client(settings).enrich(args.source_id, headless=not args.headed)
+    except KeyError:
+        print("Сначала сохраните вакансию через search", file=sys.stderr)
+        return 1
+    print(json.dumps(asdict(vacancy), ensure_ascii=False, indent=2, default=str))
+    return 0
+
+
 def cmd_capabilities(args: argparse.Namespace) -> int:
     settings = Settings.from_env()
     for capability, enabled in _client(settings).capabilities().items():
@@ -112,6 +123,11 @@ def build_parser() -> argparse.ArgumentParser:
     show = sub.add_parser("show", help="Show one stored vacancy")
     show.add_argument("source_id")
     show.set_defaults(func=cmd_show)
+
+    details = sub.add_parser("details", help="Fetch and persist details for a stored vacancy")
+    details.add_argument("source_id")
+    details.add_argument("--headed", action="store_true")
+    details.set_defaults(func=cmd_details)
 
     capabilities = sub.add_parser("capabilities", help="Show currently implemented platform capabilities")
     capabilities.set_defaults(func=cmd_capabilities)

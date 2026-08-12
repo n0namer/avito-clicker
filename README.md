@@ -16,7 +16,7 @@ Implemented vertical slice:
 - ✅ Windows CLI scripts;
 - ✅ Docker search/runtime;
 - ✅ unit tests + GitHub Actions;
-- 🚧 vacancy detail enrichment;
+- ✅ vacancy detail enrichment for stored vacancies;
 - 🚧 candidate-side `apply()` research;
 - 🚧 applications history;
 - 🚧 messenger + LLM replies.
@@ -66,6 +66,12 @@ Show stored vacancies:
 python -m avito_clicker list --limit 100
 ```
 
+Enrich one stored vacancy by opening its detail page:
+
+```powershell
+python -m avito_clicker details 123456789
+```
+
 Diagnostics:
 
 ```powershell
@@ -89,7 +95,7 @@ Product code sees capabilities, not implementation details:
 ```text
 AvitoClicker
   ├─ search            -> Browser/PublicSearch transport     ✅
-  ├─ vacancy_details   -> enrichment transport               🚧
+  ├─ vacancy_details   -> browser/JSON-LD enrichment         ✅
   ├─ apply             -> candidate mutation transport       🚧
   ├─ applications      -> candidate history transport        🚧
   └─ chats/messages    -> official/browser messenger         🚧
