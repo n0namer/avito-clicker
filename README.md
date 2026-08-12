@@ -78,6 +78,14 @@ Diagnostics:
 python -m avito_clicker doctor
 ```
 
+Probe the real candidate-side apply flow without storing cookies/tokens in the trace:
+
+```powershell
+python -m avito_clicker trace-apply --url "https://www.avito.ru/...vacancy..."
+```
+
+The sanitized trace is written under `storage/traces/` and is the input for implementing `apply()` against the real account flow.
+
 ## Docker
 
 After host login has created `storage/avito-storage-state.json`:

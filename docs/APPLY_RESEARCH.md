@@ -21,3 +21,13 @@ The project must not claim `apply()` works until we can reproduce the action for
 - no mutation during search-only scans.
 
 Until this evidence exists, `Capability.APPLY = false`.
+
+## Runtime probe
+
+After `login`, run a single manual apply flow while the project records sanitized XHR/fetch metadata:
+
+```powershell
+python -m avito_clicker trace-apply --url "https://www.avito.ru/...vacancy..."
+```
+
+The default output is `storage/traces/apply-trace.json`. Request headers are not stored; common sensitive query/body fields (tokens, OTP, phone, email, message text) are redacted. The trace is evidence for implementing an automated candidate-side transport.

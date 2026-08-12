@@ -8,6 +8,7 @@ from dataclasses import asdict
 from .client import AvitoClicker
 from .db import VacancyStore
 from .settings import Settings
+from .trace import InteractiveNetworkTrace
 from .transports import BrowserSession
 
 
@@ -74,6 +75,18 @@ def cmd_details(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_trace_apply(args: argparse.Namespace) -> int:
+    settings = Settings.from_env()
+    output = args.output or "storage/traces/apply-trace.json"
+    try:
+        path = InteractiveNetworkTrace(settings.storage_state_path).capture(args.url, output)
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    print(f"Sanitized trace saved: {path}")
+    return 0
+
+
 def cmd_capabilities(args: argparse.Namespace) -> int:
     settings = Settings.from_env()
     for capability, enabled in _client(settings).capabilities().items():
@@ -128,6 +141,13 @@ def build_parser() -> argparse.ArgumentParser:
     details.add_argument("source_id")
     details.add_argument("--headed", action="store_true")
     details.set_defaults(func=cmd_details)
+
+    trace_apply = sub.add_parser(
+        "trace-apply", help="Record sanitized XHR/fetch traffic while you apply manually"
+    )
+    trace_apply.add_argument("--url", required=True, help="Vacancy URL to open")
+    trace_apply.add_argument("--output")
+    trace_apply.set_defaults(func=cmd_trace_apply)
 
     capabilities = sub.add_parser("capabilities", help="Show currently implemented platform capabilities")
     capabilities.set_defaults(func=cmd_capabilities)
